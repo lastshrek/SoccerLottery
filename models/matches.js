@@ -66,13 +66,8 @@ export function *getOdds(id) {
         //99家赔率
         var odd99 = [];
         console.log(trList.find('td').length);
-        trList.each(function() {
-          $('this').find('td').each(function() {
-            console.log('进来啦！');
-            let trimmed = $(this).text();
-            let _str = trimmed.replace(/[ |\n|\r|\t|\&nbsp\;]/gim, '');
-            console.log(_str);
-          });
+        trList.find('td').each(function() {
+          console.log('进来啦');
         });
         // resolve(trList);
       })
