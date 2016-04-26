@@ -1,0 +1,29 @@
+extends layout
+
+block content
+  .container
+    table.table
+      thead
+        tr
+          th 赛事
+          th 时间
+          th 状态
+          th [排名] 主队
+          th 比分
+          th 客队[排名]
+          th 半场
+          th 赔率
+          th 数据
+      tbody
+        
+        for single in result
+          tr
+            td #{single.league}
+            td #{single.date}
+            td #{single.isFinished}
+            td #{single.home}
+            td #{single.score}
+            td #{single.away}
+            td #{single.halftime}
+            td #{single.odds}
+            td #{single.analysis}
