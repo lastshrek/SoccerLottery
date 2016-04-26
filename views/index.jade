@@ -19,11 +19,14 @@ block content
         for single in result
           tr
             td #{single.league}
-            td #{single.date}
+            td #{single.date.substr(0,5)}日#{single.date.substr(5,5)}
             td #{single.isFinished}
             td #{single.home}
             td #{single.score}
             td #{single.away}
             td #{single.halftime}
             td #{single.odds}
-            td #{single.analysis}
+            td 
+              a(href='odds?match_id=#{single.match_id}', target='_blank') #{single.analysis.substr(0,1)}
+              b  / 
+              a(href='/') #{single.analysis.substr(2,1)}

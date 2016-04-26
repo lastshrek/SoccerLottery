@@ -6,7 +6,7 @@ import cheerio from 'cheerio';
 import escaper from 'true-html-escape';
 import trimBody from 'trim-body';
 
-export function get(next) {
+export function *get(next) {
   var url = 'http://www.okooo.com/livecenter/football/?date=';
   var requestURL = url + getNowFormatDate();
   console.log('++++++' + requestURL + '++++++++');
@@ -25,6 +25,9 @@ export function get(next) {
         var trList = $('.each_match');
         var titleArr = ['league', 'date', 'isFinished', 'home', 'score', 'away', 'halftime', 'odds', 'analysis'];
         trList.each(function() {
+          //获取matchID
+          let idAttr = $(this).attr('id');
+          let matchID = idAttr.split('_')[2];
           //获取每个tr里面的td
           let tempArr = [];
           //格式化每个字符串
@@ -39,11 +42,41 @@ export function get(next) {
           for (let i = 0; i < tempArr.length; i++) {
             singleMatch[titleArr[i]] = tempArr[i];
           }
+          singleMatch.match_id = matchID;
           results.push(singleMatch);
         });
         resolve(results);
       });
   });
+}
+
+export function *getOdds(id) {
+  var url = 'http://www.okooo.com/soccer/match/' + id + '/odds/ajax/?page=0&companytype=BaijiaBooks';
+  charset(superagent);
+  console.log('_____' + id + '__________')
+  return new Promise(function(resolve, reject) {
+    superagent
+      .get(url)
+      .end(function(err, res) {
+        if (err) {
+          reject(err);
+        }
+        var $ = cheerio.load(res.text, {decodeEntities: false});
+        var trList = $('.fTrObj');
+        //99家赔率
+        var odd99 = [];
+        console.log(trList.find('td').length);
+        trList.each(function() {
+          $('this').find('td').each(function() {
+            console.log('进来啦！');
+            let trimmed = $(this).text();
+            let _str = trimmed.replace(/[ |\n|\r|\t|\&nbsp\;]/gim, '');
+            console.log(_str);
+          });
+        });
+        // resolve(trList);
+      })
+  })
 }
 
 function getNowFormatDate() {
@@ -58,7 +91,7 @@ function getNowFormatDate() {
   }
   if (strDate >= 0 && strDate <= 9) {
         strDate = '0' + strDate;
-    }
+  }
   var currentdate = year + seperator1 + month + seperator1 + strDate;
   return currentdate;
 

@@ -11,3 +11,8 @@ export function *home(next) {
     result: results
   })
 }
+
+export function *odds(next) {
+  var odds = yield Matches.getOdds(this.query.match_id);
+  this.body = odds;
+}
