@@ -20,7 +20,6 @@ export function get(next) {
           reject(err);
         }
         var $ = cheerio.load(res.text, {decodeEntities: false});
-        var body = {};
         //用于存放比赛数据的数组
         var results = [];
         var trList = $('.each_match');
@@ -40,27 +39,12 @@ export function get(next) {
           for (let i = 0; i < tempArr.length; i++) {
             singleMatch[titleArr[i]] = tempArr[i];
           }
-          console.log(singleMatch);
           results.push(singleMatch);
         });
-        body.result = results;
         resolve(results);
       });
   });
 }
-
-function getHTML(tag, $) {
-  let tempArr = [];
-  tag.each(function(index, el) {
-    let arr = [];
-    let t = $(el).children();
-    // arr.push(escaper.escape(t.html()));
-    arr.join(',');
-    tempArr.push(arr);
-  });
-  return tempArr;
-}
-
 
 function getNowFormatDate() {
   var date = new Date();
