@@ -1,0 +1,45 @@
+extends layout
+
+block content
+  .container
+    table.table
+      thead
+        .row
+          .col-md-4 欧指
+          .col-md-4 初始指数
+          .col-md-4 最新指数
+        tr
+          th.col-md-4 博彩公司
+          th.col-md-4
+            span.col-md-4 主
+            span.col-md-4 平
+            span.col-md-4 客
+          th.col-md-4 
+            span.col-md-4 主
+            span.col-md-4 平
+            span.col-md-4 客
+      tbody.odds
+        for odd in odds
+          tr
+            th.col-md-4 #{odd.company_name}
+            th.col-md-4
+              span.col-md-4 #{odd.initial_victory}
+              span.col-md-4 #{odd.initial_even}
+              span.col-md-4 #{odd.initial_lose}
+            th.col-md-4
+              span.col-md-4 #{odd.now_victory}
+              span.col-md-4 #{odd.now_even}
+              span.col-md-4 #{odd.now_lose}
+        tr
+          th.col-md-4 平均值
+          th.col-md-4
+            span.col-md-4 
+            span.col-md-4 
+            span.col-md-4 
+          th.col-md-4
+            span.col-md-4 
+            span.col-md-4 
+            span.col-md-4 
+        
+block script
+  script(src='/javascripts/odd.js')

@@ -53,7 +53,7 @@ export function *get(next) {
 export function *getOdds(id) {
   var url = 'http://www.okooo.com/soccer/match/' + id + '/odds/ajax/?page=0&companytype=BaijiaBooks';
   charset(superagent);
-  console.log('_____' + id + '__________')
+  console.log('_____' + id + '______')
   return new Promise(function(resolve, reject) {
     superagent
       .get(url)
@@ -64,12 +64,23 @@ export function *getOdds(id) {
         var $ = cheerio.load(res.text, {decodeEntities: false});
         var trList = $('.fTrObj');
         //99家赔率
-        var odd99 = [];
-        console.log(trList.find('td').length);
-        trList.find('td').each(function() {
-          console.log('进来啦');
-        });
-        // resolve(trList);
+        var oddAll = [];
+        var companies = ['99家平均', '威廉.希尔', '立博', 'Bet365', 'bwin', '澳门彩票', '伟德国际', '沙巴(IBCBET)'];
+        var titles = ['company_name', 'initial_victory', 'initial_even', 'initial_lose', 'now_victory', 'now_even', 'now_lose'];
+        trList.each(function(index, element) {
+          var company_name = $(this).find('td').eq(1).text().trim()
+          if (companies.indexOf(company_name) !== -1 ) {
+            let tempArr = [];
+            let company_odds = {};
+            $(this).find('td').slice(1,8).each(function(index, element) {
+              let trimmed = $(this).text().trim();
+              company_odds[titles[index]] = trimmed;
+            });
+
+            oddAll.push(company_odds);
+          }
+        })
+        resolve(oddAll);
       })
   })
 }

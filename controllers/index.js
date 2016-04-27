@@ -9,10 +9,12 @@ export function *home(next) {
   var results = yield Matches.get();
   yield this.render('index', {
     result: results
-  })
+  });
 }
 
 export function *odds(next) {
   var odds = yield Matches.getOdds(this.query.match_id);
-  this.body = odds;
+  yield this.render('odds', {
+    odds: odds
+  });
 }
