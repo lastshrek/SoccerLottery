@@ -25,8 +25,11 @@ block content
             td #{single.score}
             td #{single.away}
             td #{single.halftime}
-            td #{single.odds}
             td 
-              a(href='odds?match_id=#{single.match_id}', target='_blank') #{single.analysis.substr(0,1)}
+              span #{single.win} /
+              span #{single.even} /
+              span #{single.lose}
+            td 
+              a(href='odds?match_id=#{single.match_id}', target='_blank') #{single.euro}
               b  / 
-              a(href='/') #{single.analysis.substr(2,1)}
+              a(href='/') #{single.analysis}

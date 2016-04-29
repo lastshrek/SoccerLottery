@@ -41,6 +41,27 @@ export function *get(next) {
           let singleMatch = {};
           for (let i = 0; i < tempArr.length; i++) {
             singleMatch[titleArr[i]] = tempArr[i];
+            if (titleArr[i] === 'analysis') {
+              singleMatch.euro = '欧';
+              singleMatch.analysis = '析';
+            }
+            if (titleArr[i] === 'odds') {
+              let odd = tempArr[i];
+              if (tempArr.length > 8) {
+                let oddArr = odd.split('.');
+                let first = oddArr[1];
+                let second = oddArr[2];
+                let win = oddArr[0] + '.' + first.substr(0, 2);
+                let even = first.substr(2, 1) + '.' + second.substr(0, 2);
+                let lose = second.substr(2, 1) + '.' + oddArr[3];
+                singleMatch.win = win;
+                singleMatch.even = even;
+                singleMatch.lose = lose;
+              } else {
+                singleMatch.win = '暂无'
+              }
+
+            }
           }
           singleMatch.match_id = matchID;
           results.push(singleMatch);
@@ -52,6 +73,8 @@ export function *get(next) {
 
 export function *getOdds(id) {
   var url = 'http://www.okooo.com/soccer/match/' + id + '/odds/ajax/?page=0&companytype=BaijiaBooks';
+  var timestamp = Date.parse(new Date());
+  console.log(timestamp);
   charset(superagent);
   console.log('_____' + id + '______')
   return new Promise(function(resolve, reject) {
@@ -61,7 +84,7 @@ export function *getOdds(id) {
         if (err) {
           reject(err);
         }
-        var $ = cheerio.load(res.text, {decodeEntities: false});
+        let $ = cheerio.load(res.text, {decodeEntities: false});
         var trList = $('.fTrObj');
         //99家赔率
         var oddAll = [];
@@ -82,6 +105,7 @@ export function *getOdds(id) {
         })
         resolve(oddAll);
       })
+
   })
 }
 
