@@ -58,9 +58,8 @@ export function *get(next) {
                 singleMatch.even = even;
                 singleMatch.lose = lose;
               } else {
-                singleMatch.win = '暂无'
+                singleMatch.win = '暂无';
               }
-
             }
           }
           singleMatch.match_id = matchID;
@@ -72,12 +71,13 @@ export function *get(next) {
 }
 
 export function *getOdds(id) {
+  //主流欧洲盘口
   var url = 'http://www.okooo.com/soccer/match/' + id + '/odds/ajax/?page=0&companytype=BaijiaBooks';
-  var timestamp = Date.parse(new Date());
-  console.log(timestamp);
+  //球队最近战绩
+  var history = 'http://www.okooo.com/soccer/match/' + id + '/history/';
   charset(superagent);
-  console.log('_____' + id + '______')
   return new Promise(function(resolve, reject) {
+
     superagent
       .get(url)
       .end(function(err, res) {
@@ -103,10 +103,18 @@ export function *getOdds(id) {
             oddAll.push(company_odds);
           }
         })
+        superagent
+          .get(history)
+          .end(function(err, res) {
+            if (err) {
+              reject(err);
+            }
+            console.log(res.text);
+          })
         resolve(oddAll);
       })
 
-  })
+  });
 }
 
 function getNowFormatDate() {
