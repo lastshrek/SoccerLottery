@@ -11,3 +11,8 @@ a {
 span {
   text-align: center;
 }
+
+td th {
+  text-align: center;
+  font-weight: bold;
+}

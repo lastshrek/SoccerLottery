@@ -75,9 +75,9 @@ export function *getOdds(id) {
   var url = 'http://www.okooo.com/soccer/match/' + id + '/odds/ajax/?page=0&companytype=BaijiaBooks';
   //球队最近战绩
   var history = 'http://www.okooo.com/soccer/match/' + id + '/history/';
+  var matchInfo = {};
   charset(superagent);
   return new Promise(function(resolve, reject) {
-
     superagent
       .get(url)
       .end(function(err, res) {
@@ -97,24 +97,74 @@ export function *getOdds(id) {
             let company_odds = {};
             $(this).find('td').slice(1,8).each(function(index, element) {
               let trimmed = $(this).text().trim();
+              if (index > 1) {
+                trimmed = parseFloat(trimmed).toFixed(2);
+              }
               company_odds[titles[index]] = trimmed;
             });
-
             oddAll.push(company_odds);
           }
         })
+        //主客队最近十场战绩
         superagent
           .get(history)
+          .charset('gbk')
           .end(function(err, res) {
             if (err) {
               reject(err);
             }
-            console.log(res.text);
-          })
-        resolve(oddAll);
-      })
+            let $ = cheerio.load(res.text, {decodeEntities: false});
+            //主队最近十场比赛
+            let homeTr = $('.homecomp').find('tr');
+            let homeRecentMatch = getRecentTenMatches($, homeTr);
+            //客队最近十场比赛
+            let awayTr = $('.awaycomp').find('tr');
+            let awayRecentMatch = getRecentTenMatches($, awayTr);
+            //主客队名称
+            let homeName = $('.qpai_zi').html();
+            let awayName = $('.qpai_zi_1').html();
+            matchInfo.home_recent = homeRecentMatch;
+            matchInfo.away_recent = awayRecentMatch;
+            matchInfo.odds = oddAll;
+            resolve(matchInfo);
 
+          })
+
+
+      })
   });
+}
+function getRecentTenMatches($, trArr) {
+  let titles = ['league', 'time', 'home', 'score', 'away', 'half_time', 'final'];
+  let recentMatch = [];
+  trArr.slice(3).each(function(index, el) {
+    let singleMatch = {};
+    $(this).find('td').each(function(index, el) {
+      let trimmed = $(this).text().trim();
+      if (trimmed === '球会友谊') {
+        return false;
+      }
+      if (index < 6) {
+        singleMatch[titles[index]] = trimmed;
+      }
+      if (index === 3) {
+        let scoreArr = trimmed.split('-');
+        let homeScore = parseInt(scoreArr[0]);
+        let awayScore = parseInt(scoreArr[1]);
+        if (homeScore > awayScore) {
+          singleMatch.final = '胜';
+        } else if (homeScore === awayScore) {
+          singleMatch.final = '平';
+        } else {
+          singleMatch.final = '负';
+        }
+      }
+    });
+    if (singleMatch.league && recentMatch.length < 10) {
+      recentMatch.push(singleMatch);
+    }
+  });
+  return recentMatch;
 }
 
 function getNowFormatDate() {

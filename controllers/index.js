@@ -13,8 +13,8 @@ export function *home(next) {
 }
 
 export function *odds(next) {
-  var odds = yield Matches.getOdds(this.query.match_id);
+  var matchInfo = yield Matches.getOdds(this.query.match_id);
   yield this.render('odds', {
-    odds: odds
+    matchInfo: matchInfo
   });
 }
