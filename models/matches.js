@@ -123,17 +123,57 @@ export function *getOdds(id) {
             //主客队名称
             let homeName = $('.qpai_zi').html();
             let awayName = $('.qpai_zi_1').html();
+            let homeTenMatches = getHATenMatches($, homeTr, homeName, 1);
+            let awayTenMatches = getHATenMatches($, awayTr, awayName, 0);
             matchInfo.home_recent = homeRecentMatch;
             matchInfo.away_recent = awayRecentMatch;
+            matchInfo.home_ten = homeTenMatches;
+            matchInfo.away_ten = awayTenMatches;
             matchInfo.odds = oddAll;
             resolve(matchInfo);
 
           })
-
-
       })
   });
 }
+//获取最近十场主场或者客场比赛战绩
+function getHATenMatches($, trArr, name, hora) {
+  let titles = ['league', 'time', 'home', 'score', 'away', 'half_time', 'final'];
+  let recentMatch = [];
+  trArr.slice(3).each(function(index, el) {
+    let singleMatch = {};
+    $(this).find('td').each(function(index, el) {
+      let trimmed = $(this).text().trim();
+      if (trimmed === '球会友谊') {
+        return false;
+      }
+      if (index < 6) {
+        singleMatch[titles[index]] = trimmed;
+      }
+      if (index === 3) {
+        let scoreArr = trimmed.split('-');
+        let homeScore = parseInt(scoreArr[0]);
+        let awayScore = parseInt(scoreArr[1]);
+        if (homeScore > awayScore) {
+          singleMatch.final = '胜';
+        } else if (homeScore === awayScore) {
+          singleMatch.final = '平';
+        } else {
+          singleMatch.final = '负';
+        }
+      }
+    });
+    if (hora && singleMatch.home === name && singleMatch.league && recentMatch.length < 10) {
+      recentMatch.push(singleMatch);
+    }
+    if (!hora && singleMatch.away === name && singleMatch.league && recentMatch.length < 10) {
+      recentMatch.push(singleMatch);
+
+    }
+  });
+  return recentMatch;
+}
+//获取最近十场比赛战绩
 function getRecentTenMatches($, trArr) {
   let titles = ['league', 'time', 'home', 'score', 'away', 'half_time', 'final'];
   let recentMatch = [];

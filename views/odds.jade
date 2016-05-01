@@ -85,6 +85,50 @@ block content
                 td.col-md-3 #{away.away}
                 td.col-md-1 #{away.final}
                 td.col-md-1 #{away.half_time}
+          table.table
+            thead
+              .row
+                .col-md-12 主队最近十个主场战绩
+              .row
+                .col-md-1 比赛
+                .col-md-2 时间
+                .col-md-3 主队
+                .col-md-1 比分
+                .col-md-3 客队
+                .col-md-1 胜负
+                .col-md-1 半场
+            tbody
+              for home in matchInfo.home_ten
+                tr
+                  td.col-md-1 #{home.league}
+                  td.col-md-2 #{home.time}
+                  td.col-md-3 #{home.home}
+                  td.col-md-1 #{home.score}
+                  td.col-md-3 #{home.away}
+                  td.col-md-1 #{home.final}
+                  td.col-md-1 #{home.half_time}
+            table.table
+              thead
+                .row
+                  .col-md-12 客队最近十个客场战绩
+                .row
+                  .col-md-1 比赛
+                  .col-md-2 时间
+                  .col-md-3 主队
+                  .col-md-1 比分
+                  .col-md-3 客队
+                  .col-md-1 胜负
+                  .col-md-1 半场
+              tbody
+                for away in matchInfo.away_ten
+                  tr
+                    td.col-md-1 #{away.league}
+                    td.col-md-2 #{away.time}
+                    td.col-md-3 #{away.home}
+                    td.col-md-1 #{away.score}
+                    td.col-md-3 #{away.away}
+                    td.col-md-1 #{away.final}
+                    td.col-md-1 #{away.half_time}
               
           
         
