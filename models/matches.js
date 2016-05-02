@@ -130,8 +130,14 @@ export function *getOdds(id) {
             matchInfo.home_ten = homeTenMatches;
             matchInfo.away_ten = awayTenMatches;
             matchInfo.odds = oddAll;
+            matchInfo.title = homeName + 'vs' + awayName;
             resolve(matchInfo);
-
+          })
+        superagent
+          .get('http://odds.500.com/index_all.shtml')
+          .end(function(err, res) {
+            let $ = cheerio.load(res.text, {decodeEntities: false});
+            console.log($('#main-tbody').find('tr').length);
           })
       })
   });
