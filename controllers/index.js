@@ -13,7 +13,7 @@ export function *home(next) {
 }
 
 export function *odds(next) {
-  var matchInfo = yield Matches.getOdds(this.query.match_id);
+  var matchInfo = yield Matches.getOdds(this.query.match_id , this.query.date, this.query.h, this.query.a);
   yield this.render('odds', {
     matchInfo: matchInfo
   });

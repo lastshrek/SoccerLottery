@@ -30,6 +30,6 @@ block content
               span #{single.even} /
               span #{single.lose}
             td 
-              a(href='odds?match_id=#{single.match_id}', target='_blank') #{single.euro}
+              a(href='odds?match_id=#{single.match_id}&date=#{single.date}&league=#{single.league}&h=#{single.home}&a=#{single.away}', target='_blank') #{single.euro}
               b  / 
               a(href='/') #{single.analysis}

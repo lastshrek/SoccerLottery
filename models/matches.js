@@ -70,7 +70,7 @@ export function *get(next) {
   });
 }
 
-export function *getOdds(id) {
+export function *getOdds(id, date, h, a) {
   //主流欧洲盘口
   var url = 'http://www.okooo.com/soccer/match/' + id + '/odds/ajax/?page=0&companytype=BaijiaBooks';
   //球队最近战绩
@@ -133,15 +133,29 @@ export function *getOdds(id) {
             matchInfo.title = homeName + 'vs' + awayName;
             resolve(matchInfo);
           })
+          //获取亚盘数据
         superagent
           .get('http://odds.500.com/index_all.shtml')
+          .charset('gbk')
           .end(function(err, res) {
+            //转换date
+            let newdate = date.substr(0, 5) + ' ' + date.substr(5, 5);
+            //获取主客队排名
+            let homerank = getRank(h);
+            let awayrank = getRank(a);
             let $ = cheerio.load(res.text, {decodeEntities: false});
-            console.log($('#main-tbody').find('tr').length);
+            let trList = $('#main-tbody').find('tr');
+            console.log($('#main-tbody').find('tr').find('td').eq(5).text());
           })
       })
   });
 }
+function getRank(name) {
+  let first = name.indexOf('[');
+  let last = name.indexOf(']');
+  return name.substr(first, last - first + 1);
+}
+
 //获取最近十场主场或者客场比赛战绩
 function getHATenMatches($, trArr, name, hora) {
   let titles = ['league', 'time', 'home', 'score', 'away', 'half_time', 'final'];
@@ -179,6 +193,7 @@ function getHATenMatches($, trArr, name, hora) {
   });
   return recentMatch;
 }
+
 //获取最近十场比赛战绩
 function getRecentTenMatches($, trArr) {
   let titles = ['league', 'time', 'home', 'score', 'away', 'half_time', 'final'];
@@ -205,6 +220,7 @@ function getRecentTenMatches($, trArr) {
           singleMatch.final = '负';
         }
       }
+
     });
     if (singleMatch.league && recentMatch.length < 10) {
       recentMatch.push(singleMatch);
